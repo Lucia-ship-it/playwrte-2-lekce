@@ -1,5 +1,7 @@
 from playwright.sync_api import Page
 
+#vdaka evaluate mozeme zavolat hociaky java skript
+#playwrite ma veela knihoven, vela je napsano, staci uz len vyuzit
 
 def test_cookies_local_storace(page: Page):
     page.goto(

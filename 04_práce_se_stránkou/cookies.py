@@ -3,7 +3,7 @@ from playwright.sync_api import sync_playwright
 
 def test_w3schools_cookie_setting():
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=False)
+        browser = p.chromium.launch(headless=False, slow_mo=2000)
         context = browser.new_context()
         page = context.new_page()
 
@@ -16,7 +16,7 @@ def test_w3schools_cookie_setting():
         # Klikni na tlačítko "Set Cookie"
         page.click("button:has-text('Create Cookie 1')")
 
-        # Získání cookies
+        # Získání cookies [{"name":"first name:"}]
         cookies = page.context.cookies()
 
         # Vyhledání požadované cookie
