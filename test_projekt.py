@@ -39,7 +39,7 @@ def test_new_page(page: Page):
     # # <a href="/leto/doplnky-stravy-na-opalovani" class="dropdown-menu__content-list--item--title">Doplňky stravy na opalování</a>
     new_page = h_text.click()
 
-    assert new_page == page.goto"https://www.lekarnalemon.cz/leto/doplnky-stravy-na-opalovani"
+    assert new_page == page.goto("https://www.lekarnalemon.cz/leto/doplnky-stravy-na-opalovani")
 
 def test_chart(page: Page):
     page.goto("https://www.lekarnalemon.cz/leto/doplnky-stravy-na-opalovani")
@@ -61,5 +61,5 @@ def test_chart(page: Page):
     #na novej stranke overim, ze sa mi tam produkt s nazvom....nachadza - nebude tam, lebo sme v anonimnom okne
 
 
-    LEPSIE BUDE PRIHLASENIE
-    najedem na prihlasenie, click, do emailu vyplnim neexist email, do hesla nieco a entrom odoslem. kontrola ze sa zobrazi chybova hlaska.
+    # LEPSIE BUDE PRIHLASENIE
+    # najedem na prihlasenie, click, do emailu vyplnim neexist email, do hesla nieco a entrom odoslem. kontrola ze sa zobrazi chybova hlaska.
