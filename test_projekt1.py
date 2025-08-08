@@ -5,7 +5,7 @@ import pytest
 @pytest.fixture
 def page():
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=False, slow_mo=1000)
+        browser = p.chromium.launch(headless=False, slow_mo=2000)
         # context = browser.new_context()
         # page = context.new_page()
         page = browser.new_page()
@@ -26,17 +26,14 @@ def test_cookies_click(page: Page):
     page.goto("https://www.lekarnalemon.cz/?srsltid=AfmBOooEQ8c3jgvq-BJtH48oN3GY7-c4_KsYt6MVQ4JPhedXCQ4LGWCp")
     button = page.locator("#cookiescript_accept") 
     print("before click")
-    page.screenshot(path="before_click.png")
 
     button.click()
     page.wait_for_timeout(2000)
 
     print("after click")
-    page.screenshot(path="after_click.png")
 
-    # overim, ze sa mi nezobrazuje
     cookies_square = page.locator("#cookiescript_injected")
-    
+     # overim, ze sa mi nezobrazuje
     assert cookies_square.is_visible() == False
 
 
@@ -47,11 +44,10 @@ def test_new_page(page: Page):
     button.click()
 
 # rozbali sa mi ponuka, screenshot  
-    page.wait_for_timeout(2000)
+    page.wait_for_selector("body > header > div.page-header__navigation > div > nav > div.menu-item.menu-item-dropdown.show > div > div", 5000)
     page.screenshot(path="ponuka menu.png")
-    # page.locator("body > header > div.page-header__navigation > div > nav > div.menu-item.menu-item-dropdown.show > div > div").wait_for(state="visible")
 
-# chcem kliknut na text s doplnkami stravy:
+    # klik na text s doplnkami stravy:
     h_text = page.locator("text=Doplňky stravy na opalování")
     h_text.click()
     print("po kliknuti na doplnky stravy")
@@ -61,21 +57,21 @@ def test_new_page(page: Page):
 
 def test_cart(page: Page):
     page.goto("https://www.lekarnalemon.cz/leto/doplnky-stravy-na-opalovani")
-    # otvor si produkt s nazvom:
+    # otvor si produkt 
     produkt = page.locator("h3.box__product-title:has-text('Gs Betakaroten gold 15 mg 30 kapslí')")
     produkt.click()
 
     assert page.url ==  "https://www.lekarnalemon.cz/leto/doplnky-stravy-na-opalovani/gs-betakaroten-gold-15mg-cps-30-8595693300541"
 
-    [print("druha cast")]
-    page.wait_for_timeout(1000)
-    # najdem tlacitko koupit, kliknem
+    [print("pokracujeme na novej stranke")]
+    page.wait_for_load_state("networkidle")
+
     buy_button = page.locator("#product-head > div.container.mt-lg-4 > form > div > div:nth-child(2) > div > div > div > div.col-xl-7.col-lg-10.col-sm-9.col-md-6 > div > div.col-6.js-buy-button > button")
     buy_button.click()
     print("kliklo")
-    page.wait_for_timeout(1000)
+    page.wait_for_selector("#modal-template-content > div.modal__body", 5000)
 
-    # klik na x kosik
+    # presun do kosiku
     cart = page.locator("#modal-template-content > div.modal__body > div.row.cart-modal-buttons > div.col-sm-6.text-center.text-sm-right.order-sm-1.mb-3.mb-sm-0 > a")
     cart.click()
     print("kliklo na pokracovat do kosiku")
@@ -84,15 +80,12 @@ def test_cart(page: Page):
     print("sme v kosiku")
 
     # skontrolujem, ze sa mi tam nachadza produkt
+    cart_items = page.locator("#cart-form")
 
-    cart_items = page.locator(".order-list__product-text a")
     assert cart_items.filter(has_text="Betakaroten").first.is_visible()
 
-#toto nie je dobre ani v jednom riadku 
-    # cart_content = page.locator("#item-f9dfe36b-c11c-47c5-b387-a0ea45e71b68 > div.order-list__item-cell.order-list__item-cell--product > div > div.order-list__product-text > a")  # alebo iný selektor podľa layoutu košíka
+#toto nie je dobre 
     # assert cart_content.filter(has_text="Betakaroten").is_visible()
-
-
 
 
  # chcem zistit jestli je videt text ri ikonke prihlasit sa
@@ -100,7 +93,7 @@ def test_log_icon(page : Page):
     page.goto("https://www.lekarnalemon.cz/")
     icon = page.locator("body > header > div.container > div > div.page-header__top-nav > a:nth-child(2) > span.page-header__top-link--icon")
     icon.hover(timeout=1000) 
-    #kontrola ze bude videt text, najdem si ho
+    #kontrola na objavenie sa textu
     text = page.locator('span.page-header__top-link--text', has_text="Přihlásit")
 
     assert text.is_visible(), "Text 'Přihlásit' sa nezobrazil po hovernutí na ikonku"
@@ -108,23 +101,16 @@ def test_log_icon(page : Page):
 
 def test_log_in_negative(page: Page):
     page.goto("https://www.lekarnalemon.cz/login")
-    
     page.fill("#_username", "test@email.com")
     page.fill("#_password", "heslo")
-
     page.press("#_password", "Enter")
 
-     # Locator na hlášku s chybou – uprav podľa toho, kde sa hláška zobrazuje
-    error_message = page.locator("text=Zlé údaje")  # alebo časť textu, ktorý sa zobrazí
-#cart-form > div.alert.alert-danger.mb-4 > p
-
-    # Počkame, či sa hláška objaví (timeout v ms)
+    error_message = page.locator("#cart-form > div.alert.alert-danger.mb-4")  
     error_message.wait_for(state="visible", timeout=3000)
 
-    # Potom overíme, že je viditeľná
     assert error_message.is_visible(), "Chybová hláška o zlých údajoch sa nezobrazila"
 
- 
+
 def test_new_page(page: Page):
     page.goto("https://www.lekarnalemon.cz/")
 
@@ -134,3 +120,4 @@ def test_new_page(page: Page):
 
         new_page = popup.value
         assert new_page == "https://prehledy.sukl.cz/prehledy.html#/lekarny/00215013336?verify=true"
+
