@@ -10,7 +10,7 @@ def page():
         # page = context.new_page()
         page = browser.new_page()
         yield page
-        
+
 #pytest test_projekt.py
 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
@@ -94,4 +94,12 @@ def test_cart(page: Page):
 
 
 
- 
+ # chcem zistit jestli je videt text ri ikonke prihlasit sa
+def test_log_icon(page : Page):
+    page.goto("https://www.lekarnalemon.cz/")
+    icon = page.locator("body > header > div.container > div > div.page-header__top-nav > a:nth-child(2) > span.page-header__top-link--icon")
+    icon.hover(timeout=1000) 
+    #kontrola ze bude videt text, najdem si ho
+    text = page.locator('span.page-header__top-link--text', has_text="Přihlásit")
+
+    assert text.is_visible(), "Text 'Přihlásit' sa nezobrazil po hovernutí na ikonku"
