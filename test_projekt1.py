@@ -39,6 +39,7 @@ def test_cookies_click(page: Page):
     
     assert cookies_square.is_visible() == False
 
+
 def test_new_page(page: Page):
     page.goto("https://www.lekarnalemon.cz/?srsltid=AfmBOooEQ8c3jgvq-BJtH48oN3GY7-c4_KsYt6MVQ4JPhedXCQ4LGWCp")
     # na stranke najdi v menu leto a klikni nan
@@ -103,3 +104,33 @@ def test_log_icon(page : Page):
     text = page.locator('span.page-header__top-link--text', has_text="Přihlásit")
 
     assert text.is_visible(), "Text 'Přihlásit' sa nezobrazil po hovernutí na ikonku"
+
+
+def test_log_in_negative(page: Page):
+    page.goto("https://www.lekarnalemon.cz/login")
+    
+    page.fill("#_username", "test@email.com")
+    page.fill("#_password", "heslo")
+
+    page.press("#_password", "Enter")
+
+     # Locator na hlášku s chybou – uprav podľa toho, kde sa hláška zobrazuje
+    error_message = page.locator("text=Zlé údaje")  # alebo časť textu, ktorý sa zobrazí
+#cart-form > div.alert.alert-danger.mb-4 > p
+
+    # Počkame, či sa hláška objaví (timeout v ms)
+    error_message.wait_for(state="visible", timeout=3000)
+
+    # Potom overíme, že je viditeľná
+    assert error_message.is_visible(), "Chybová hláška o zlých údajoch sa nezobrazila"
+
+ 
+def test_new_page(page: Page):
+    page.goto("https://www.lekarnalemon.cz/")
+
+    with page.expect_popup() as popup:
+        button = page.locator("body > footer > div.page-footer__menu > div > div > div:nth-child(2) > div > a:nth-child(1) > picture > img")
+        button.click()
+
+        new_page = popup.value
+        assert new_page == "https://prehledy.sukl.cz/prehledy.html#/lekarny/00215013336?verify=true"
