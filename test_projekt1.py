@@ -1,6 +1,16 @@
 from playwright.sync_api import Page
 from datetime import datetime
+import pytest
 
+@pytest.fixture
+def page():
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=False, slow_mo=1000)
+        # context = browser.new_context()
+        # page = context.new_page()
+        page = browser.new_page()
+        yield page
+        
 #pytest test_projekt.py
 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
