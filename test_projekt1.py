@@ -66,13 +66,15 @@ def test_cart(page: Page):
     [print("pokracujeme na novej stranke")]
     page.wait_for_load_state("networkidle")
 
-    buy_button = page.locator("#product-head > div.container.mt-lg-4 > form > div > div:nth-child(2) > div > div > div > div.col-xl-7.col-lg-10.col-sm-9.col-md-6 > div > div.col-6.js-buy-button > button")
+    buy_button = page.locator("#product-head div.js-buy-button > button") #snad ho najde
+    # buy_button = page.locator("#product-head > div.container.mt-lg-4 > form > div > div:nth-child(2) > div > div > div > div.col-xl-7.col-lg-10.col-sm-9.col-md-6 > div > div.col-6.js-buy-button > button")
     buy_button.click()
     print("kliklo")
     page.wait_for_selector("#modal-template-content > div.modal__body", 5000)
 
     # presun do kosiku
-    cart = page.locator("#modal-template-content > div.modal__body > div.row.cart-modal-buttons > div.col-sm-6.text-center.text-sm-right.order-sm-1.mb-3.mb-sm-0 > a")
+    cart = page.locator("#modal-template-content div.cart-modal-buttons a")
+    # stare - ("#modal-template-content > div.modal__body > div.row.cart-modal-buttons > div.col-sm-6.text-center.text-sm-right.order-sm-1.mb-3.mb-sm-0 > a")
     cart.click()
     print("kliklo na pokracovat do kosiku")
  
@@ -115,7 +117,7 @@ def test_new_page(page: Page):
     page.goto("https://www.lekarnalemon.cz/")
 
     with page.expect_popup() as popup:
-        button = page.locator("body > footer > div.page-footer__menu > div > div > div:nth-child(2) > div > a:nth-child(1) > picture > img")
+        button = page.locator("footer .page-footer__menu a:nth-child(1) picture img")
         button.click()
 
         new_page = popup.value
