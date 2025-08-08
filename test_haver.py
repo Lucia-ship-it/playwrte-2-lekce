@@ -19,23 +19,23 @@ def test_hover(page : Page):
     #najet mysi
     div.hover() # hover sa vola ta metoda
     #kontrola ze bude videt text, najdem si ho
-    h5 = div.locator("h5")
+    h5 = div.locator("div.figure:nth-child(3) > div:nth-child(2) > h5:nth-child(1)") #nemusis hladat na celej stranke, upravime
     #assert ci je vidiet
     assert h5.is_visible()
 
     # python -m pytest test_haver.py
-    # spustenie funguje, test prejde
+    # dalsi testy uz pekne prejdu 
 
     # ked je lokatorov viac, urobi nam z toho zoznam a mi zadame, ktoru z toho zoznamu ma spracovat
-def test_hover_2(page : Page):
+def test_hover_1(page : Page):
     page.goto("http://the-internet.herokuapp.com/hovers")
     div = page.locator("div.figure").nth(0)
     div.hover()
-    h5 = page.locator("div.figure:nth-child(3) > div:nth-child(2) > h5:nth-child(1)")
+    h5 = page.locator("h5")
     assert h5.is_visible()
 
 
-def test_hover_3(page : Page):
+def test_hover_2(page : Page):
     page.goto("http://the-internet.herokuapp.com/hovers")
     div = page.locator("div.figure").nth(1)
     div.hover()
@@ -43,7 +43,7 @@ def test_hover_3(page : Page):
     assert h5.is_visible()
 
 #PREPISTE TO TAK, ABY SME KONTROLOVALI POSLEDNY OBRAZOK
-def test_hover_4(page : Page):
+def test_hover_3(page : Page):
     page.goto("http://the-internet.herokuapp.com/hovers")
     div = page.locator("div.figure").nth(2)
     div.hover()
